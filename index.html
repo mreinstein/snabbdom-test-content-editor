@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Content Editor</title>
+
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      }
+
+      img {
+        image-rendering: pixelated;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <main>
+    </main>
+
+<script type="module">
+
+// https://medium.com/@yelouafi/react-less-virtual-dom-with-snabbdom-functions-everywhere-53b672cb2fe3
+// https://github.com/yelouafi/snabbdom-starter/blob/counter-3/app/js/counterList.js
+
+import { h, init } from './node_modules/snabbdom/es/snabbdom.js'
+import classModule from './node_modules/snabbdom/es/modules/class.js'
+import propsModule from './node_modules/snabbdom/es/modules/props.js'
+import styleModule from './node_modules/snabbdom/es/modules/style.js'
+import attrsModule from './node_modules/snabbdom/es/modules/attributes.js'
+import eventModule from './node_modules/snabbdom/es/modules/eventlisteners.js'
+import app         from './app.js'
+
+
+// init patch function with chosen modules
+const patch = init([
+    classModule,  // makes it easy to toggle classes
+    propsModule,  // for setting properties on DOM elements
+    styleModule,  // handles styling on elements with support for animations
+    attrsModule,
+    eventModule   // attaches event listeners
+])
+
+
+function main (initState, oldVnode, { view, update }) {
+  const newVnode = view(initState, event => {
+    const newState = update(initState, event)
+    main(newState, newVnode, { view, update })
+  })
+  patch(oldVnode, newVnode)
+}
+
+
+main(
+  app.init(),
+  document.querySelector('main'),
+  app
+)
+
+</script>
+</body>
+</html>
