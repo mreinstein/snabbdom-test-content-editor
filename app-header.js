@@ -1,4 +1,4 @@
-import { h } from './node_modules/snabbdom/es/snabbdom.js'
+import html from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
 
 
 function init () {
@@ -7,47 +7,13 @@ function init () {
 
 
 function view (rawText, handler) {
-  return h('header', {
-    style: {
-      borderBottom: '1px solid #676e87',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      gridColumn: '1 / span 2',
-      padding: '12px 18px'
-    }
-  }, [
-    h('button', {
-      on: {
-        click: (event) => handler({ type: 'import' })
-      },
-      style: {
-        cursor: 'pointer',
-        border: 'none',
-        borderRadius: '4px',
-        padding: '8px',
-        backgroundColor: 'rgb(88, 94, 127)',
-        color: 'white',
-        textTransform: 'uppercase'
-      }
-    }, 'Import'),
-    h('button', {
-      on: {
-        click: (event) => handler({ type: 'export' })
-      },
-      style: {
-        cursor: 'pointer',
-        border: 'none',
-        borderRadius: '4px',
-        padding: '8px',
-        backgroundColor: 'rgb(88, 94, 127)',
-        color: 'white',
-        textTransform: 'uppercase',
-        marginLeft: '12px'
-      }
-    }, 'Export')
-  ])
+  return html`
+    <header style="border-bottom: 1px solid rgb(103, 110, 135); display: flex; flex-direction: row; align-items: center; justify-content: flex-end; grid-column: 1 / span 2; padding: 12px 18px;">
+      <button @on:click=${(event) => handler({ type: 'import' })}
+              style="cursor: pointer; border: none; border-radius: 4px; padding: 8px; background-color: rgb(88, 94, 127); color: white; text-transform: uppercase;">Import</button>
+      <button @on:click=${(event) => handler({ type: 'export' })}
+              style="cursor: pointer; border: none; border-radius: 4px; padding: 8px; background-color: rgb(88, 94, 127); color: white; text-transform: uppercase; margin-left: 12px;">Export</button>
+    </header>`
 }
 
 

@@ -1,4 +1,4 @@
-import { h } from './node_modules/snabbdom/es/snabbdom.js'
+import html from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
 
 
 function init () {
@@ -11,105 +11,48 @@ function init () {
 
 
 function view (model, handler) {
-  const search = h('input', {
-    attrs: {
-      placeholder: 'Search',
-      type: 'text'
-    },
-    on: {
-      keyup: (event) => handler({ type: 'edit-filter', text: event.target.value })
-    },
-    style: {
-      color: 'white',
-      width: '100%',
-      backgroundColor: '#3e4258',
-      border: 'none',
-      boxSizing: 'border-box',
-      padding: '10px',
-      textAlign: 'right'
-    }
-  })
+  const addKey = function (e) {
+    const translationKey = prompt('please enter a translation key:')
+    // TODO: check if the key already exists
+    if (translationKey)
+      handler({ type: 'add-translation-key', translationKey })
+  }
 
-  const controls = h('div',
-    {
-      style: {
-        display: 'flex',
-        borderBottom: '1px solid rgb(103, 110, 135)',
-        marginBottom: '8px'
-      }
-    },
-    [
-      search,
-      h('button', {
-        style: {
-          fontSize: '1.5em',
-          backgroundColor: 'rgb(88, 94, 127)',
-          color: 'white',
-          border: 'none',
-          cursor: 'pointer'
-        },
-        on: {
-          click: function (e) {
-            const translationKey = prompt('please enter a translation key:')
-            // TODO: check if the key already exists
-            if (translationKey)
-              handler({ type: 'add-translation-key', translationKey })
-          }
-        }
-      }, '+')
-    ]
-  )
-
-  const ul = h('ul', {
-    style: {
-      listStyle: 'none',
-      margin: '0px 8px',
-      padding: '0',
-      fontSize: '0.8em'
-    }
-  }, Object.keys(model.translations)
+  const translationList = Object.keys(model.translations)
             .filter((translationKey) => !model.filter.trim().length || translationKey.indexOf(model.filter.trim()) > -1)
-            .map((translationKey) => h('li', {
-              style: {
-                backgroundColor: (translationKey === model.selected) ? 'dodgerblue' : '',
-                cursor: 'pointer',
-                padding: '4px',
-                wordBreak: 'break-word',
-                display: 'flex',
-                justifyContent: 'space-between'
-              },
-              on: {
-                click: handler.bind(null, { type: 'select', selected: translationKey })
-              }
-            }, [
-              translationKey,
-              h('button', {
-                on: {
-                  click: function (e) {
-                    const translationKey = prompt('enter new translation key name:')
-                    // TODO: check if the key already exists
-                    if (translationKey)
-                      handler({ type: 'rename-translation-key', translationKey })
-                  }
-                },
-                style: {
-                  display: (translationKey === model.selected) ? '' : 'none',
-                  backgroundColor: 'transparent',
-                  color: 'white',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  border: '1px solid'
-                }
-              }, 'rename')
-            ])))
+            .map((translationKey) => {
 
-  return h('section', { style: {
-    backgroundColor: '#485371',
-    borderLeft: '1px solid rgb(105, 109, 125)',
-    overflowY: 'scroll',
-    display: 'flex',
-    flexDirection: 'column'
-  }}, [ controls, ul ])
+              const renameKey = function (ev) {
+                const translationKey = prompt('enter new translation key name:')
+                // TODO: check if the key already exists
+                if (translationKey)
+                  handler({ type: 'rename-translation-key', translationKey })
+              }
+
+              return html`
+                <li style="cursor: pointer; padding: 4px; word-break: break-word; display: flex; justify-content: space-between;"
+                    @style:background-color=${(translationKey === model.selected) ? 'dodgerblue' : ''}
+                    @on:click=${handler.bind(null, { type: 'select', selected: translationKey })}>
+                  ${translationKey}
+                  <button style="background-color: transparent; color: white; border-radius: 4px; cursor: pointer; border: 1px solid;"
+                          @on:click=${renameKey}
+                          @style:display=${(translationKey === model.selected) ? '' : 'none'}>rename</button>
+                </li>`
+            })
+
+
+  return html`
+    <section style="background-color: rgb(72, 83, 113); border-left: 1px solid rgb(105, 109, 125); overflow-y: scroll; display: flex; flex-direction: column;">
+      <div style="display: flex; border-bottom: 1px solid rgb(103, 110, 135); margin-bottom: 8px;">
+        <input placeholder="Search"
+               type="text"
+               @on:keyup=${(event) => handler({ type: 'edit-filter', text: event.target.value })}
+               style="color: white; width: 100%; background-color: rgb(62, 66, 88); border: none; box-sizing: border-box; padding: 10px; text-align: right;">
+        <button style="font-size: 1.5em; background-color: rgb(88, 94, 127); color: white; border: none; cursor: pointer;"
+                @on:click=${addKey}>+</button>
+      </div>
+      <ul style="list-style: none; margin: 0px 8px; padding: 0px; font-size: 0.8em;">${translationList}</ul>
+    </section>`
 }
 
 

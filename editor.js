@@ -1,4 +1,4 @@
-import { h } from './node_modules/snabbdom/es/snabbdom.js'
+import html from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
 
 
 function init () {
@@ -7,30 +7,14 @@ function init () {
 
 
 function view (rawText, handler) {
-  return h('section', [
-      h('textarea', {
-        attrs: {
-          placeholder: 'raw input text'
-        },
-        on: {
-          keyup: (event) => handler({ type: 'edit', text: event.target.value })
-        },
-        props: {
-          value: rawText
-        },
-        style: {
-          backgroundColor: 'transparent',
-          border: 'none',
-          borderBottom: '1px solid #676e87',
-          boxSizing: 'border-box',
-          color: 'white',
-          height: '300px',
-          padding: '18px',
-          width: '100%'
-        }
-      }),
-      h('div', { style: { padding: '18px', fontFamily: 'orange kid' } }, rawText)
-  ])
+  return html`
+    <section>
+        <textarea placeholder="raw input text"
+                  @on:keyup=${(event) => handler({ type: 'edit', text: event.target.value })}
+                  @props:value=${rawText}
+                  style="background-color: transparent; border-top: none; border-right: none; border-bottom: 1px solid rgb(103, 110, 135); border-left: none; border-image: initial; box-sizing: border-box; color: white; height: 300px; padding: 18px; width: 100%;"></textarea>
+        <div style="padding: 18px; font-family: &quot;orange kid&quot;;">${rawText}</div>
+    </section>`
 }
 
 

@@ -1,4 +1,4 @@
-import { h } from './node_modules/snabbdom/es/snabbdom.js'
+import html from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
 
 
 function init () {
@@ -17,65 +17,21 @@ function view (model, handler) {
     invalidJSON = false
   } catch (er) { }
 
-  return h('dialog', {
-      props: {
-        open: model.open
-      },
-      style: {
-        backgroundColor: 'whitesmoke',
-        paddingTop: '2em'
-      }
-    }, [
-      h('button', {
-        style: {
-          position: 'absolute',
-          top: '7px',
-          right: '15px'
-        },
-        on: {
-          click: () => handler({ type: 'close-dialog' })
-        }
-      }, 'x'),
-      h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end'
-          }
-        }, [
-          h('textarea', {
-            attrs: {
-              readonly: (model.mode === 'export')
-            },
-            props: {
-              value: model.rawText
-            },
-            on: {
-              input: (event) => handler({ type: 'edit', rawText: event.target.value })
-            },
-            style: {
-              height: '70vh',
-              width: '70vw'
-            }
-          }, model.rawText),
-          h('button', {
-            attrs: {
-              disabled: invalidJSON
-            },
-            on: {
-              click: () => handler({ type: 'import', text: JSON.parse(model.rawText) })
-            },
-            style: {
-              cursor: 'pointer',
-              border: '1px solid',
-              borderRadius: '4px',
-              marginTop: '6px',
-              padding: '10px',
-              display: (model.mode === 'import') ? '' : 'none'
-            }
-          }, 'import')
-        ])
-    ])
+  return html`
+    <dialog style="background-color: whitesmoke; padding-top: 2em;" @attrs:open=${model.open}>
+      <button style="position: absolute; top: 7px; right: 15px;"
+              @on:click=${() => handler({ type: 'close-dialog' })}>x</button>
+      <div style="display: flex; flex-direction: column; align-items: flex-end;">
+        <textarea style="height: 70vh; width: 70vw;"
+                  @attrs:readonly=${model.mode === 'export'}
+                  @props:value=${model.rawText}
+                  @on:input=${(event) => handler({ type: 'edit', rawText: event.target.value })}>${model.rawText}</textarea>
+        <button style="cursor: pointer; border: 1px solid; border-radius: 4px; margin-top: 6px; padding: 10px; display: none;"
+                @attrs:disabled=${invalidJSON}
+                @on:click=${() => handler({ type: 'import', text: JSON.parse(model.rawText) })}
+                @style:display=${(model.mode === 'import') ? '' : 'none'}>import</button>
+      </div>
+    </dialog>`
 }
 
 

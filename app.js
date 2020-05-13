@@ -1,6 +1,6 @@
 import dlg        from './dialog.js'
 import editor     from './editor.js'
-import { h }      from './node_modules/snabbdom/es/snabbdom.js'
+import html       from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
 import header     from './app-header.js'
 import stringList from './string-list.js'
 
@@ -16,22 +16,13 @@ function init () {
 
 
 function view (model, handler) {
-  return h('main', {
-      style: {
-        display: 'grid',
-        gridTemplateColumns: '2fr minmax(370px, 1fr)',
-        gridTemplateRows: '40px 1fr',
-        height: '100vh',
-        color: 'white',
-        backgroundColor: '#3f4554'
-      }
-    }, [
-      header.view(model.header, a => handler({ type: 'HEADER', data: a })),
-      editor.view(model.editor, a => handler({ type: 'EDITOR', data: a })),
-      stringList.view(model.translations, a => handler({ type: 'TRANSLATIONS', data: a })),
-      dlg.view(model.dialog, a => handler({ type: 'IMPORT', data: a }))
-    ])
-  }
+  return html`<main style="display: grid; grid-template-columns: 2fr minmax(370px, 1fr); grid-template-rows: 40px 1fr; height: 100vh; color: white; background-color: #3f4554">
+      ${header.view(model.header, a => handler({ type: 'HEADER', data: a }))}
+      ${editor.view(model.editor, a => handler({ type: 'EDITOR', data: a }))}
+      ${stringList.view(model.translations, a => handler({ type: 'TRANSLATIONS', data: a }))}
+      ${dlg.view(model.dialog, a => handler({ type: 'IMPORT', data: a }))}
+    </main>`
+}
 
 
 function update (model, action) {
