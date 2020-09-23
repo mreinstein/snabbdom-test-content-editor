@@ -1,6 +1,6 @@
 import dlg        from './dialog.js'
 import editor     from './editor.js'
-import html       from 'https://cdn.jsdelivr.net/gh/mreinstein/snabby@248d06d727659a0bb43a1c0f4f22cbd69be9177/snabby.js'
+import html       from 'https://cdn.jsdelivr.net/npm/snabby@2/snabby.js'
 import header     from './app-header.js'
 import stringList from './string-list.js'
 
